@@ -24,7 +24,6 @@ class MultiTaskModelEmbedd(TorchModel):
     
         self.output_atb_class = nn.Sequential(nn.Linear(1024, 25), nn.Softmax())
         self.output_mechanism = nn.Sequential(nn.Linear(1024,5), nn.Softmax())
-        self.output_mobility = nn.Sequential(nn.Linear(1024,2), nn.Softmax())
         
         self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2)
 
@@ -38,7 +37,6 @@ class MultiTaskModelEmbedd(TorchModel):
         hidd = self.hidden(x)
         atb_class = self.output_atb_class(hidd)
         mechanism = self.output_mechanism(hidd)
-        #mobility = self.output_mobility(hidd)
 
         return atb_class, mechanism #, mobility
 
