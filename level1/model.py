@@ -84,7 +84,7 @@ model = MultiTaskModel()
 model.training_step(trainloader=trainloader, nb_epochs=10, atb_coeff=0.1, mech_coeff=1.2)
 
 # Save model
-model.save_model(path = "/home/selim/Documents/myApps/HMD-ARG/src")
+model.save_model(path = "/home/selim/Documents/myApps/HMD-ARG/level1")
 
 atb_pred, mech_pred = model.forward(x_test)
 
