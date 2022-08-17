@@ -59,7 +59,10 @@ for k in label_assignment:
     subclass = np.full((len(X[matching])), label_assignment[k])
     samples[matching]= np.column_stack((X[matching], subclass))
 
-print(samples)
+print(np.shape(samples))
+
+mask = ['0' not in line[0] for line in samples]
+samples = samples[mask]
 
 #missing = []
 #for gene in genes:
