@@ -78,7 +78,7 @@ samples = samples[mask]
 
 #Separate data into training and test sets
 useful_embedds = cls_embeddings[atb_classes == "beta_lactam"][mask]
-x_train, x_test, y_train, y_test = train_test_split(useful_embedds, samples[:, 1], test_size=0.3)
+x_train, x_test, y_train, y_test = train_test_split(useful_embedds.numpy(), samples[:, 1], test_size=0.3)
 
 
 #---------------------------------Logistic Regression-------------------------------------------------
@@ -114,18 +114,18 @@ x_train, x_test, y_train, y_test = train_test_split(useful_embedds, samples[:, 1
 
 #---------------------------------MLP-----------------------------------------------------------------
 
-#n_class = len(np.unique(y_train))
+n_class = len(np.unique(y_train))
 #print(n_class)
-#input_shape = x_train.shape[1]
+input_shape = x_train.shape[1]
 #print(input_shape)
 
-#mlp = MLP(input_shape=input_shape, n_class=n_class)
-#mlp.fit(x_train, y_train, epochs=16)
-#mlp.save("model.pt")
+mlp = MLP(input_shape=input_shape, n_class=n_class)
+mlp.fit(x_train, y_train, epochs=16)
+mlp.save("model.pt")
 
 # Model evaluation
-#y_pred = mlp(x_test).squeeze().detach().numpy()
-#model_evaluation_accuracy(y_test, y_pred)
+y_pred = mlp(x_test).squeeze().detach().numpy()
+model_evaluation_accuracy(y_test, y_pred)
 
 #------------------------------------------------------------------------------------------------------
 
