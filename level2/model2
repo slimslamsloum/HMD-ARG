@@ -59,8 +59,6 @@ for k in label_assignment:
     subclass = np.full((len(X[matching])), label_assignment[k])
     samples[matching]= np.column_stack((X[matching], subclass))
 
-print(np.shape(samples))
-
 mask = ['0' not in line[0] for line in samples]
 samples = samples[mask]
 
@@ -78,13 +76,9 @@ samples = samples[mask]
 #print(Counter(res))
 
 
-
-
-
-#4828 gene names 
-
 #Separate data into training and test sets
-#x_train, x_test, y_train, y_test = train_test_split(np.array(lowdim_embeddings), y[0], test_size=0.3)
+useful_embedds = cls_embeddings[atb_classes == "beta_lactam"][mask]
+x_train, x_test, y_train, y_test = train_test_split(useful_embedds, samples[:, 1], test_size=0.3)
 
 
 #---------------------------------Logistic Regression-------------------------------------------------
