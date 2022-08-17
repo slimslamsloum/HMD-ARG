@@ -5,6 +5,9 @@ from biodatasets, and the embedding of the 17k proteins come from the
 esm1_t34_670M_UR100 model.
 """
 
+from string import digits
+from typing import Counter
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -40,9 +43,40 @@ atb_classes = atb_classes[0]
 X = X[0][atb_classes == "beta_lactam"]
 
 _, genes = dataset.to_npy_arrays(input_names=["sequence"], target_names=["gene_name"])
-genes = genes[0][atb_classes == "beta_lactam"]
+genes = np.array(genes[0]).astype(str)[atb_classes == "beta_lactam"]
 
-beta_lectamase = ["TEM", "SHV", "AmpC", "OXA", "CcrA", "IndB"]
+genes = np.array(genes)
+X = np.array(X)
+
+label_assignment = {"TEM": 'A' , "SHV": 'A', "AmpC": 'C' , "OXA": 'D', "CcrA": 'B' , "IndB": 'B', "AmpC": 'C',
+"CMY": 'C', "bla": 'A', "ACT" : 'C', "IMP": 'B', "VIM": 'B', "CARB": 'A', "cphA": 'B', "GES": 'A', "LEN": 'A',
+"TLA": 'A', "OXY": 'A', "NDM": 'B', "MIR": 'C', "DHA": 'C', "KPC": 'A'}
+
+samples = np.zeros((len(X),2)).astype(str)
+
+for k in label_assignment:
+    matching = [k in s for s in genes]
+    subclass = np.full((len(X[matching])), label_assignment[k])
+    samples[matching]= np.column_stack((X[matching], subclass))
+
+print(samples)
+
+#missing = []
+#for gene in genes:
+#    if not any(k in gene for k in label_assignment.keys()):
+#        missing.append(gene)
+#print(missing)
+#print(len(np.unique(missing)))
+#print(Counter(missing))
+
+#remove_chars = str.maketrans('','',digits+'-'+'_')
+#res = [s.translate(remove_chars) for s in missing]
+#print(len(np.unique(res)))
+#print(Counter(res))
+
+
+
+
 
 #4828 gene names 
 
