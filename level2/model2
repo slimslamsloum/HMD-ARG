@@ -128,10 +128,13 @@ mlp.fit(x_train, y_train, epochs=16)
 mlp.save("model.pt")
 
 # Model evaluation
-y_pred = mlp(x_test).squeeze().detach().numpy()
-print(y_pred)
-print(y_test)
-#model_evaluation_accuracy(y_test, y_pred)
+probabilities_pred = mlp(x_test).squeeze().detach().numpy()
+y_pred =[]
+for i in range(len(x_test)):
+    y_pred.append(np.argmax(probabilities_pred[i]))
+print((y_pred))
+print((y_test))
+model_evaluation_accuracy(y_test, y_pred)
 
 #------------------------------------------------------------------------------------------------------
 
