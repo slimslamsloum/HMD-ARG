@@ -128,34 +128,25 @@ mlp.fit(x_train, y_train, epochs=16)
 mlp.save("model.pt")
 
 # Model evaluation
-probabilities_pred = mlp(x_test).squeeze().detach().numpy()
-y_pred =[]
-for i in range(len(x_test)):
-    y_pred.append(np.argmax(probabilities_pred[i]))
-print((y_pred))
-print((y_test))
-model_evaluation_accuracy(y_test, y_pred)
+y_pred = mlp(x_test).squeeze().detach().numpy()
 
 #------------------------------------------------------------------------------------------------------
 
-# Plot confusion matrix
-#confusion_matrix_plot(y_test, (y_pred > 0.5).astype(int), ["0", "1"])
-
 # Accuracy evaluation
-#accuracy = Accuracy()
-#print('Accuracy: {0}'.format(accuracy(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+accuracy = Accuracy()
+print('Accuracy: {0}'.format(accuracy(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
 
 # Precision evaluation
-#precision = Precision()
-#print('Precision: {0}'.format(precision(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+precision = Precision()
+print('Precision: {0}'.format(precision(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
 
 # Recall evalution
-#recall = Recall()
-#print('Recall: {0}'.format(recall(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+recall = Recall()
+print('Recall: {0}'.format(recall(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
 
 # F1 Score evaluation
-#f1score = F1()
-#print('F1 Score: {0}'.format(f1score(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+f1score = F1()
+print('F1 Score: {0}'.format(f1score(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
 
 
 
