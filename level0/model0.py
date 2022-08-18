@@ -113,6 +113,7 @@ mlp.save("model.pt")
 
 # Model evaluation
 y_pred = mlp(x_test).squeeze().detach().numpy()
+print(y_pred)
 model_evaluation_accuracy(y_test, y_pred)
 
 #------------------------------------------------------------------------------------------------------
