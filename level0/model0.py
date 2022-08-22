@@ -122,19 +122,14 @@ model_evaluation_accuracy(y_test, y_pred)
 confusion_matrix_plot(y_test, (y_pred > 0.5).astype(int), ["0", "1"])
 
 # Accuracy evaluation
-#accuracy = accuracy_score()
-#print('Accuracy: {0}'.format(accuracy(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
-#print(accuracy_score(y_true=y_test, y_pred=(y_pred > 0.5).astype(int)))
+print('Accuracy: {0}'.format(accuracy_score(y_true=y_test, y_pred=(y_pred > 0.5).astype(int))))
 
 # Precision evaluation
-#precision = precision_score()
-#print('Precision: {0}'.format(precision(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+print('Precision: {0}'.format(precision_score(y_true=y_test, y_pred=(y_pred > 0.5).astype(int))))
 
 # Recall evalution
-#recall = recall_score()
-#print('Recall: {0}'.format(recall(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+print('Recall: {0}'.format(recall_score(y_true=y_test, y_pred=(y_pred > 0.5).astype(int))))
 
 # F1 Score evaluation
-#f1score = f1_score()
-#print('F1 Score: {0}'.format(f1score(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+print('F1: {0}'.format(f1_score(y_true=y_test, y_pred=(y_pred > 0.5).astype(int))))
 
