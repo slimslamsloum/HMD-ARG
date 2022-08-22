@@ -2,14 +2,8 @@
 
 """
 
-from collections import Counter
-from plistlib import load
-from tkinter import Y
-
 import numpy as np
-import pandas as pd
 import torch
-import torch.nn.functional as F
 from biodatasets import list_datasets, load_dataset
 from deepchain.models import MLP
 from deepchain.models.utils import (confusion_matrix_plot,
@@ -29,24 +23,21 @@ X, atb_classes = dataset.to_npy_arrays(input_names=["sequence"], target_names=["
 X, mechanism = dataset.to_npy_arrays(input_names=["sequence"], target_names=["mechanism"])
 y = y[0]
 
-# Compute the mechanisms associated to each protein
-# There are 5 different resistance mechanisms
+# Compute atb classes and encode them.
 atb_classes = atb_classes[0][y==1]
 encoder_1 = preprocessing.LabelEncoder()
 encoded_atb_classes = encoder_1.fit_transform(atb_classes)
 #print(len((encoded_atb_classes)))
 
-#5 resistance mechanisms
+# Compute the mechanisms associated to each protein
+# There are 5 different resistance mechanisms
 mechanism = mechanism[0][y==1]
 encoder_2 = preprocessing.LabelEncoder()
 encoded_mechanism = encoder_2.fit_transform(mechanism)
 #print(len((encoded_mechanism)))
 
 
-#8706 samples that are ARG
-
 # Compute embeddings (of size 1280)
-
 cls_embeddings = np.load(
         "/home/selim/.cache/bio-datasets/antibiotic-resistance/sequence_esm1_t34_670M_UR100_cls_embeddings.npy",
     allow_pickle=True)[y==1]
@@ -58,8 +49,6 @@ x_train, x_test, y_train, y_test = train_test_split(cls_embeddings, np.column_st
 batch_size = 32
 trainloader = DataLoader(np.column_stack((x_train, y_train)), batch_size=batch_size)
 testloader = DataLoader(np.column_stack((x_test, y_test)), batch_size=batch_size)
-
-#print(np.column_stack((x_train, y_train)))
 
 # Create model
 model = MultiTaskModelEmbedd()
@@ -73,27 +62,25 @@ model.save_model(path = "/home/selim/Documents/myApps/HMD-ARG/level1/model_embed
 # Predict on test set
 atb_pred, mech_pred = model.forward(x_test)
 
+#append the atb and mechanism predictions into a list
 pred=[]
 for i in range(len(x_test)):
-    #print(np.argmax(mech_pred[i].detach().numpy))
     pred.append((np.argmax(atb_pred[i].detach().numpy()),np.argmax(mech_pred[i].detach().numpy())))
 
-#print(pred)
-
 # Accuracy evaluation
-accuracy = Accuracy(mdmc_average='samplewise')
+accuracy = Accuracy(mdmc_average='global')
 print('Accuracy: {0}'.format(accuracy(torch.tensor(pred), torch.from_numpy(y_test))))
 
 # Precision evaluation
-precision = Precision(mdmc_average='samplewise')
+precision = Precision(mdmc_average='global')
 print('Precision: {0}'.format(precision(torch.tensor(pred), torch.from_numpy(y_test).int())))
 
 # Recall evalution
-recall = Recall(mdmc_average='samplewise')
+recall = Recall(mdmc_average='global')
 print('Recall: {0}'.format(recall(torch.tensor(pred), torch.from_numpy(y_test).int())))
 
 # F1 Score evaluation
-f1score = F1(mdmc_average='samplewise')
+f1score = F1(mdmc_average='global')
 print('F1 Score: {0}'.format(f1score(torch.tensor(pred), torch.from_numpy(y_test).int())))
 
 
