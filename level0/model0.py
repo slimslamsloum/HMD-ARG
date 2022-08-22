@@ -14,7 +14,6 @@ from biodatasets import list_datasets, load_dataset
 from deepchain.models import MLP
 from deepchain.models.utils import (confusion_matrix_plot,
                                     model_evaluation_accuracy)
-from joblib import dump, load
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from sklearn.manifold import TSNE
@@ -62,9 +61,8 @@ sns.scatterplot(
     alpha =0.3
 )
 
-# Store tsne plot and pca model
+#Store tsne plot and pca model
 #plt.savefig('src/level0/tsne.png')
-#dump(pca, 'src/level0/pca.joblib')
 
 #Separate data into training and test sets
 x_train, x_test, y_train, y_test = train_test_split(np.array(lowdim_embeddings), y[0], test_size=0.3)
