@@ -22,11 +22,12 @@ from sklearn import preprocessing
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from sklearn.manifold import TSNE
+from sklearn.metrics import (accuracy_score, f1_score, precision_score,
+                             recall_score)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from torch import Tensor, float32, float64, norm, randperm
-from torchmetrics import F1, Accuracy, AveragePrecision, Precision, Recall
 
 # Load embedding and target dataset
 dataset = load_dataset("antibiotic-resistance")
@@ -129,24 +130,22 @@ mlp.save("model.pt")
 
 # Model evaluation
 y_pred = mlp(x_test).squeeze().detach().numpy()
+print(y_test)
+y_pred = np.argmax(y_pred, axis=1)
 
 #------------------------------------------------------------------------------------------------------
 
 # Accuracy evaluation
-accuracy = Accuracy()
-print('Accuracy: {0}'.format(accuracy(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+print('Accuracy: {0}'.format(accuracy_score(y_true=y_test, y_pred=y_pred)))
 
 # Precision evaluation
-precision = Precision()
-print('Precision: {0}'.format(precision(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+print('Precision: {0}'.format(precision_score(y_true=y_test, y_pred=y_pred, average='weighted')))
 
 # Recall evalution
-recall = Recall()
-print('Recall: {0}'.format(recall(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+print('Recall: {0}'.format(recall_score(y_true=y_test, y_pred=y_pred, average='weighted')))
 
 # F1 Score evaluation
-f1score = F1()
-print('F1 Score: {0}'.format(f1score(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+print('F1: {0}'.format(f1_score(y_true=y_test, y_pred=y_pred, average='weighted')))
 
 
 
