@@ -18,11 +18,12 @@ from joblib import dump, load
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from sklearn.manifold import TSNE
+from sklearn.metrics import (accuracy_score, f1_score, precision_score,
+                             recall_score)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
 from torch import Tensor, float32, float64, norm, randperm
-from torchmetrics import F1, Accuracy, AveragePrecision, Precision, Recall
 
 # Load embedding and target dataset
 dataset = load_dataset("antibiotic-resistance")
@@ -113,7 +114,6 @@ mlp.save("model.pt")
 
 # Model evaluation
 y_pred = mlp(x_test).squeeze().detach().numpy()
-print(y_pred)
 model_evaluation_accuracy(y_test, y_pred)
 
 #------------------------------------------------------------------------------------------------------
@@ -122,25 +122,19 @@ model_evaluation_accuracy(y_test, y_pred)
 confusion_matrix_plot(y_test, (y_pred > 0.5).astype(int), ["0", "1"])
 
 # Accuracy evaluation
-accuracy = Accuracy()
-print('Accuracy: {0}'.format(accuracy(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+#accuracy = accuracy_score()
+#print('Accuracy: {0}'.format(accuracy(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+#print(accuracy_score(y_true=y_test, y_pred=(y_pred > 0.5).astype(int)))
 
 # Precision evaluation
-precision = Precision()
-print('Precision: {0}'.format(precision(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+#precision = precision_score()
+#print('Precision: {0}'.format(precision(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
 
 # Recall evalution
-recall = Recall()
-print('Recall: {0}'.format(recall(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
+#recall = recall_score()
+#print('Recall: {0}'.format(recall(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
 
 # F1 Score evaluation
-f1score = F1()
-print('F1 Score: {0}'.format(f1score(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
-
-
-
-
-
-
-
+#f1score = f1_score()
+#print('F1 Score: {0}'.format(f1score(torch.from_numpy(y_pred), torch.from_numpy(y_test).int())))
 
