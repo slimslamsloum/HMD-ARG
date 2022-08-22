@@ -32,35 +32,40 @@ from torch import Tensor, float32, float64, norm, randperm
 # Load embedding and target dataset
 dataset = load_dataset("antibiotic-resistance")
 
+# Separate sequences and their ARG labels
 X, y = dataset.to_npy_arrays(input_names=["sequence"], target_names=["label"])
 
+# Compute embeddings
 cls_embeddings = np.load(
     "/home/selim/.cache/bio-datasets/antibiotic-resistance/sequence_esm1_t34_670M_UR100_cls_embeddings.npy",
     allow_pickle=True)
 
 cls_embeddings = torch.tensor(np.vstack(cls_embeddings).astype(np.float))
 
+# Keep sequences that are beta_lactam
 _, atb_classes = dataset.to_npy_arrays(input_names=["sequence"], target_names=["antibiotic_class"])
 atb_classes = atb_classes[0]
 X = X[0][atb_classes == "beta_lactam"]
 
+# Fetch genes that are beta_lactam
 _, genes = dataset.to_npy_arrays(input_names=["sequence"], target_names=["gene_name"])
 genes = np.array(genes[0]).astype(str)[atb_classes == "beta_lactam"]
-
 genes = np.array(genes)
 X = np.array(X)
 
+# Compute assignement of gene names and their assigned beta_lactam subclass
 label_assignment = {"TEM": 'A' , "SHV": 'A', "AmpC": 'C' , "OXA": 'D', "CcrA": 'B' , "IndB": 'B', "AmpC": 'C',
 "CMY": 'C', "bla": 'A', "ACT" : 'C', "IMP": 'B', "VIM": 'B', "CARB": 'A', "cphA": 'B', "GES": 'A', "LEN": 'A',
 "TLA": 'A', "OXY": 'A', "NDM": 'B', "MIR": 'C', "DHA": 'C', "KPC": 'A'}
 
 samples = np.zeros((len(X),2)).astype(str)
 
+# Create list of sequences that have a gene name in previous dictionary, with their assigned beta_lactam
+# subclass
 for k in label_assignment:
     matching = [k in s for s in genes]
     subclass = np.full((len(X[matching])), label_assignment[k])
     samples[matching]= np.column_stack((X[matching], subclass))
-
 mask = ['0' not in line[0] for line in samples]
 samples = samples[mask]
 
@@ -77,6 +82,7 @@ samples = samples[mask]
 #print(len(np.unique(res)))
 #print(Counter(res))
 
+# Encode samples
 encoder = preprocessing.LabelEncoder()
 encoded_samples = encoder.fit_transform(samples[:,1])
 
