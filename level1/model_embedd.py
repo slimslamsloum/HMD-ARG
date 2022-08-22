@@ -62,7 +62,7 @@ model.save_model(path = "/home/selim/Documents/myApps/HMD-ARG/level1/model_embed
 # Predict on test set
 atb_pred, mech_pred = model.forward(x_test)
 
-#append the atb and mechanism predictions into a list
+# Append the atb and mechanism predictions into a list
 pred=[]
 for i in range(len(x_test)):
     pred.append((np.argmax(atb_pred[i].detach().numpy()),np.argmax(mech_pred[i].detach().numpy())))
