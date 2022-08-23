@@ -2,11 +2,14 @@
 
 """
 
+from typing import Counter
+
 import numpy as np
 import torch
 from biodatasets import list_datasets, load_dataset
 from deepchain.models import MLP
-from deepchain.models.utils import confusion_matrix_plot, model_evaluation_accuracy
+from deepchain.models.utils import (confusion_matrix_plot,
+                                    model_evaluation_accuracy)
 from multitaskmodel_embedd import MultiTaskModelEmbedd
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -54,6 +57,8 @@ x_train, x_test, y_train, y_test = train_test_split(
     np.column_stack((encoded_atb_classes, encoded_mechanism)),
     test_size=0.3,
 )
+print((Counter(y_train[:,1])))
+print(Counter(y_test[:,1]))
 batch_size = 32
 trainloader = DataLoader(np.column_stack((x_train, y_train)), batch_size=batch_size)
 testloader = DataLoader(np.column_stack((x_test, y_test)), batch_size=batch_size)
