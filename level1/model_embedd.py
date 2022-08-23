@@ -54,16 +54,28 @@ cls_embeddings = np.load(
 
 cls_embeddings = np.vstack(cls_embeddings).astype(np.float)
 
+counter_atb = Counter(encoded_atb_classes)
+counter_mech = Counter(encoded_mechanism)
+
+weights_atb = torch.zeros([22])
+weights_mech = torch.zeros([5])
+
+
+for k in counter_atb.keys():
+    weights_atb[k] = len(encoded_atb_classes)/(22*counter_atb[k])
+
+for k in counter_mech.keys():
+    weights_mech[k] = len(encoded_mechanism)/(22*counter_mech[k])
+
+print(weights_atb)
+print(weights_mech)
+
 # Separate in training and test set. Compute dataloaders
 x_train, x_test, y_train, y_test = train_test_split(
     cls_embeddings,
     np.column_stack((encoded_atb_classes, encoded_mechanism)),
     test_size=0.3,
 )
-print((Counter(y_train[:,0])))
-print(Counter(y_test[:,0]))
-print((Counter(y_train[:,1])))
-print(Counter(y_test[:,1]))
 batch_size = 32
 trainloader = DataLoader(np.column_stack((x_train, y_train)), batch_size=batch_size)
 testloader = DataLoader(np.column_stack((x_test, y_test)), batch_size=batch_size)

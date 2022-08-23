@@ -27,7 +27,8 @@ class MultiTaskModelEmbedd(TorchModel):
         self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2)
 
         # Loss and optimizer
-        self.loss = F.cross_entropy
+        self.loss_atb = torch.nn.CrossEntropyLoss()
+        self.loss_mech = torch.nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.parameters(), lr=0.0001)
 
     # Forward pass
@@ -56,10 +57,10 @@ class MultiTaskModelEmbedd(TorchModel):
                 atb_class_pred, mechanism_pred = self.forward(x.unsqueeze(1))
 
                 # Compute separate losses
-                loss_atb_class = self.loss(
+                loss_atb_class = self.loss_atb(
                     atb_class_pred.squeeze(1), y[:, 0].type(torch.LongTensor)
                 )
-                loss_mechanisms = self.loss(
+                loss_mechanisms = self.loss_mech(
                     mechanism_pred.squeeze(1), y[:, 1].type(torch.LongTensor)
                 )
 
