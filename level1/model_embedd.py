@@ -2,6 +2,7 @@
 
 """
 
+import random
 from typing import Counter
 
 import numpy as np
@@ -16,6 +17,8 @@ from sklearn.model_selection import train_test_split
 from torch import Tensor, float32, float64
 from torch.utils.data import DataLoader
 from torchmetrics import F1, Accuracy, AveragePrecision, Precision, Recall
+
+random.seed(10)
 
 # Load embedding and target dataset
 dataset = load_dataset("antibiotic-resistance")
@@ -57,6 +60,8 @@ x_train, x_test, y_train, y_test = train_test_split(
     np.column_stack((encoded_atb_classes, encoded_mechanism)),
     test_size=0.3,
 )
+print((Counter(y_train[:,0])))
+print(Counter(y_test[:,0]))
 print((Counter(y_train[:,1])))
 print(Counter(y_test[:,1]))
 batch_size = 32
