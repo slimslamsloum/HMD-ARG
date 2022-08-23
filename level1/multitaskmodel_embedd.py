@@ -17,12 +17,12 @@ class MultiTaskModelEmbedd(TorchModel):
 
         # Hidden layers
         self.fc1 = nn.Linear(1280, 1024)
-        self.fc2 = nn.Linear(1024,1024)
+        self.fc2 = nn.Linear(1024, 1024)
 
         # Output layers for multi task
         self.output_atb_class = nn.Sequential(nn.Linear(1024, 25), nn.Softmax())
-        self.output_mechanism = nn.Sequential(nn.Linear(1024,5), nn.Softmax())
-        
+        self.output_mechanism = nn.Sequential(nn.Linear(1024, 5), nn.Softmax())
+
         # Hidden layer
         self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2)
 
@@ -38,7 +38,7 @@ class MultiTaskModelEmbedd(TorchModel):
         atb_class = self.output_atb_class(hidd)
         mechanism = self.output_mechanism(hidd)
 
-        return atb_class, mechanism 
+        return atb_class, mechanism
 
     # Train model
     def training_step(self, trainloader, nb_epochs, atb_coeff, mech_coeff):
@@ -46,28 +46,32 @@ class MultiTaskModelEmbedd(TorchModel):
 
             for (idx, batch) in enumerate(trainloader):
                 # Separate samples and labels
-                x = batch[:,:-2]
-                y = batch[:,-2:]
+                x = batch[:, :-2]
+                y = batch[:, -2:]
 
                 # Zero out gradients
                 self.optimizer.zero_grad()
 
                 # Forward pass
                 atb_class_pred, mechanism_pred = self.forward(x.unsqueeze(1))
-                   
+
                 # Compute separate losses
-                loss_atb_class = self.loss(atb_class_pred.squeeze(1), y[:,0].type(torch.LongTensor))
-                loss_mechanisms = self.loss(mechanism_pred.squeeze(1), y[:,1].type(torch.LongTensor))
+                loss_atb_class = self.loss(
+                    atb_class_pred.squeeze(1), y[:, 0].type(torch.LongTensor)
+                )
+                loss_mechanisms = self.loss(
+                    mechanism_pred.squeeze(1), y[:, 1].type(torch.LongTensor)
+                )
 
                 # Compute overall loss
-                loss = loss_atb_class*atb_coeff + loss_mechanisms*mech_coeff
+                loss = loss_atb_class * atb_coeff + loss_mechanisms * mech_coeff
 
                 # Backpropagation
                 loss.backward()
-                
+
                 # Adjust weights
                 self.optimizer.step()
 
     # Save model
     def save_model(self, path: str):
-        torch.save({'model': self.state_dict()}, path)   
+        torch.save({"model": self.state_dict()}, path)
