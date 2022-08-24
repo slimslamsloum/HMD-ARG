@@ -42,4 +42,9 @@ for k in counter_atb.keys():
     weights_atb[k] = len(encoded_atb_classes)/(22*counter_atb[k])
 
 for k in counter_mech.keys():
-    weights_mech[k] = len(encoded_mechanism)/(22*counter_mech[k])
+    weights_mech[k] = len(encoded_mechanism)/(5*counter_mech[k])
+
+print(counter_atb)
+print(weights_atb)
+print(counter_mech)
+print(weights_mech)

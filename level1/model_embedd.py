@@ -69,7 +69,7 @@ model = MultiTaskModelEmbedd()
 
 # Train model
 model.training_step(
-    trainloader=trainloader, nb_epochs=10, atb_coeff=1, mech_coeff=1
+    trainloader=trainloader, nb_epochs=10, atb_coeff=0.2, mech_coeff=1
 )
 
 # Save model

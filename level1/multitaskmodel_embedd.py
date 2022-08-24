@@ -25,11 +25,11 @@ class MultiTaskModelEmbedd(TorchModel):
         self.output_mechanism = nn.Sequential(nn.Linear(1024, 5), nn.Softmax())
 
         # Hidden layer
-        self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2)
+        self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2, nn.ReLU())
 
         # Loss and optimizer
         self.loss_atb = torch.nn.CrossEntropyLoss(weight=weights_atb)
-        self.loss_mech = torch.nn.CrossEntropyLoss(weights_mech)
+        self.loss_mech = torch.nn.CrossEntropyLoss(weight=weights_mech)
         self.optimizer = optim.Adam(self.parameters(), lr=0.0001)
 
     # Forward pass
