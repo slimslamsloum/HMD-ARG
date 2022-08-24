@@ -2,7 +2,7 @@
 
 The rapid spread of antibiotic resistant bacteria is occuring worldwide, and is endangering global health by mitigating the efficacy of antibiotics, which have transformed medicine and saved millions of lives. This resistance is due to the overuse and misuse of antibiotics, which has led to Antibiotic Resistant Genes (ARG). Accurately identifying and understanding ARGs is an indispensable step to solve the antibiotic resistance crisis, which is the goal of this project. 
 
-This project is a base application that uses a hierarchical multi-task method, HMD-ARG, which provides detailed annotations of ARGS. The model is divided into three seperate levels. Namely, the model first predicts if a given protein
+This project is a base application that uses a hierarchical multi-task method, HMD-ARG, which provides detailed annotations of ARGS. The model is divided into three seperate levels. Namely, the model first predicts whether a given protein
 is produced by an ARG or not (Level 0). If it is, then the model predicts the resistance mechanism and the antibiotic class the gene is resistant to (Level 1). And finally, if the predicted antibiotic family is beta-lactamase, we predict the subclass of beta-lactamase the ARG is resistant to (level 2).
 
 The work is mainly based on the paper [HMD-ARG](https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-021-01002-3). 
