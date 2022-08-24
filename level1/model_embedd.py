@@ -36,7 +36,7 @@ y = y[0]
 atb_classes = atb_classes[0][y == 1]
 encoder_1 = preprocessing.LabelEncoder()
 encoded_atb_classes = encoder_1.fit_transform(atb_classes)
-# print(len((encoded_atb_classes)))
+#print(len((np.unique(encoded_atb_classes))))
 
 # Compute the mechanisms associated to each protein
 # There are 5 different resistance mechanisms
@@ -54,22 +54,6 @@ cls_embeddings = np.load(
 
 cls_embeddings = np.vstack(cls_embeddings).astype(np.float)
 
-counter_atb = Counter(encoded_atb_classes)
-counter_mech = Counter(encoded_mechanism)
-
-weights_atb = torch.zeros([22])
-weights_mech = torch.zeros([5])
-
-
-for k in counter_atb.keys():
-    weights_atb[k] = len(encoded_atb_classes)/(22*counter_atb[k])
-
-for k in counter_mech.keys():
-    weights_mech[k] = len(encoded_mechanism)/(22*counter_mech[k])
-
-print(weights_atb)
-print(weights_mech)
-
 # Separate in training and test set. Compute dataloaders
 x_train, x_test, y_train, y_test = train_test_split(
     cls_embeddings,
@@ -85,7 +69,7 @@ model = MultiTaskModelEmbedd()
 
 # Train model
 model.training_step(
-    trainloader=trainloader, nb_epochs=10, atb_coeff=0.1, mech_coeff=1.2
+    trainloader=trainloader, nb_epochs=10, atb_coeff=1, mech_coeff=1
 )
 
 # Save model

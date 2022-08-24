@@ -3,6 +3,7 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 from deepchain.models.torch_model import TorchModel
+from scaling_weights import weights_atb, weights_mech
 from torch import nn
 
 
@@ -20,15 +21,15 @@ class MultiTaskModelEmbedd(TorchModel):
         self.fc2 = nn.Linear(1024, 1024)
 
         # Output layers for multi task
-        self.output_atb_class = nn.Sequential(nn.Linear(1024, 25), nn.Softmax())
+        self.output_atb_class = nn.Sequential(nn.Linear(1024, 22), nn.Softmax())
         self.output_mechanism = nn.Sequential(nn.Linear(1024, 5), nn.Softmax())
 
         # Hidden layer
         self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2)
 
         # Loss and optimizer
-        self.loss_atb = torch.nn.CrossEntropyLoss()
-        self.loss_mech = torch.nn.CrossEntropyLoss()
+        self.loss_atb = torch.nn.CrossEntropyLoss(weight=weights_atb)
+        self.loss_mech = torch.nn.CrossEntropyLoss(weights_mech)
         self.optimizer = optim.Adam(self.parameters(), lr=0.0001)
 
     # Forward pass
