@@ -1,28 +1,26 @@
 # HMD-ARG
-This app is a base application that computes the probability that a protein is antibiotic-resistant (ARG).
-The work is mainly based on the paper [HMD-ARG](https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-021-01002-3), which describes a more complex model that provides detailed annotations of ARGs.
-We first use a bio-transformers with a 'esm1_t34_670M_UR100' model to compute the CLS embeddings. The dataset used is [antibiotic-resistance](https://github.com/DeepChainBio/bio-datasets/blob/main/datasets/antibiotic-resistance/description.md).
 
-This app is a base application that uses a hierarchical multi-task method, HMD-ARG, which provides detailed annotations of antibiotic resistant genes (ARGs). The model first predicts if a given gene
-will be an ARG or not (level 0), then it predicts the resistance mechanism and the antibiotic class it is resistant to (level 1), and finally if the predicted antbiotic family is beta-lactamase we predict the subclass of beta-lactamase the ARG is resistant to (level 2).
+The rapid spread of antibiotic resistant bacteria is occuring worldwide, and is endangering global health by mitigating the efficacy of antibiotics, which have transformed medicine and saved millions of lives. This resistance is due to the overuse and misuse of antibiotics, which has led to Antibiotic Resistant Genes (ARG). Accurately identifying and understanding ARGs is an indispensable step to solve the antibiotic resistance crisis, which is the goal of this project. 
+
+This project is a base application that uses a hierarchical multi-task method, HMD-ARG, which provides detailed annotations of ARGS. The model is divided into three seperate levels. Namely, the model first predicts if a given protein
+will is produced by an ARG or not (Level 0). If it is, then the model predicts the resistance mechanism and the antibiotic class the gene is resistant to (Level 1). And finally, if the predicted antibiotic family is beta-lactamase, we predict the subclass of beta-lactamase the ARG is resistant to (level 2).
 
 The work is mainly based on the paper [HMD-ARG](https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-021-01002-3). 
 
-The following sketch describes the HDM-ARG:
+The following sketch describes HMD-ARG:
 
 ## Dataset
 
-The dataset has been curated by the Deepchain team on [antibiotic-resistance](https://github.com/DeepChainBio/bio-datasets/blob/main/datasets/antibiotic-resistance/description.md) and comprises of 17k samples. Each sample consists of a protein sequence, a label (0 or 1) indicating whether it's ARG or not,
-the gene name, the antibiotic class it is resistant to and the resistance mechanism. 
+The dataset has been curated by the Deepchain team on [antibiotic-resistance](https://github.com/DeepChainBio/bio-datasets/blob/main/datasets/antibiotic-resistance/description.md) and comprises of 17k samples. Each sample consists of a protein sequence, a label (0 or 1) indicating whether it has been produced by an ARG or not, the gene name, the antibiotic class it is resistant to and the resistance mechanism. 
 
 Here is an example of a sample in our dataset: 
 
 ## Level 0
 
-Here we seek to predict whether a protein is ARG or not.
-We first apply a PCA to the embeddings with desired percentage of variance kept at 95%, which led to 
-159 features (instead of the 1280 features of the embeddings). We then apply a T-SNE visualization to the
-low-dimensional data, and notice the data classes are well separable:
+Here we seek to predict whether a protein is produced by an ARG or not. 
+Our raw protein sequences are first embedded using a Transformer, with each embedding having 1280 features.
+We then apply a dimensionality reduction method, namely PCA, to these embeddings with desired percentage of variance kept at 95%, which led to 
+samples with 159 features. We then apply the T-SNE method to our data to visualize it in 2 dimensions. We clearly notice that thanks to the Transformer and the use of PCA, we have only kept relevant information and separated the data into 2 classes quite nicely.
 
 ![tsne.pgn](https://i.postimg.cc/SN7tY8sK/tsne.png)
 
@@ -42,8 +40,8 @@ Logistic regression and SVM were also tried but the MLP provided the best overal
 
 ## Level 1
 
-If the protein is ARG, we then want to know what its resistance mechanism is and what antibiotic it is resistant to. To do so we use a multi-task learning deep neural network to predict at the same time
-these two annotations. The model architecture is the following:
+If the protein is indeed coming from an ARG, we then want to know what its resistance mechanism is and what antibiotic it is resistant to. To do so we use a multi-task learning deep neural network to predict at the same time
+these two labels (the resistance mecanism, and the antibiotic class). The model architecture is the following:
 
 We achieved the following results:
 
