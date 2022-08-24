@@ -1,0 +1,30 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import torch
+import torch.nn.functional as F
+import torch.optim as optim
+from biodatasets import list_datasets, load_dataset
+from deepchain.models import MLP
+from deepchain.models.torch_model import TorchModel
+from deepchain.models.utils import (confusion_matrix_plot,
+                                    model_evaluation_accuracy)
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression
+from sklearn.manifold import TSNE
+from sklearn.metrics import (accuracy_score, f1_score, precision_score,
+                             recall_score)
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from torch import Tensor, float32, float64, nn, norm, randperm
+
+
+
+class MultiTaskModelEmbedd(TorchModel):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        
