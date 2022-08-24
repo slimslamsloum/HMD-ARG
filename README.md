@@ -64,7 +64,7 @@ We achieved the following results:
 
 ## Level 2
 
-Finally, if the protein is resistant to a beta-lactamase antibiotic, we predict what subclass of beta-lactamase it is resistant to. The subclass nomenclature is based on the website [beta-lactamase-database]https://ifr48.timone.univ-mrs.fr/beta-lactamase/public/. The model used is exactly the same as the one used in Level 0, and achieved the following results:
+Finally, if the protein is resistant to a beta-lactamase antibiotic, we predict what subclass of beta-lactamase it is resistant to. The subclass nomenclature is based on the website [beta-lactamase-database](https://ifr48.timone.univ-mrs.fr/beta-lactamase/public/). The model used is exactly the same as the one used in Level 0, and achieved the following results:
 
 Accuracy: 0.92, Precision: 0.92, Recall: 0.92, F1: 0.91.
 
