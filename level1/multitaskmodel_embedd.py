@@ -1,4 +1,5 @@
 import numpy as np
+import pytorch_lightning as pl
 import torch
 import torch.nn.functional as F
 import torch.optim as optim
@@ -7,7 +8,7 @@ from scaling_weights import weights_atb, weights_mech
 from torch import nn
 
 
-class MultiTaskModelEmbedd(TorchModel):
+class MultiTaskModelEmbedd(pl.LightningModule):
 
     # Model architecture
     def __init__(self, input_shape: int = 1280, **kwargs):
@@ -28,8 +29,10 @@ class MultiTaskModelEmbedd(TorchModel):
         self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2, nn.ReLU())
 
         # Loss and optimizer
-        self.loss_atb = torch.nn.CrossEntropyLoss(weight=weights_atb)
-        self.loss_mech = torch.nn.CrossEntropyLoss(weight=weights_mech)
+        #self.loss_atb = torch.nn.CrossEntropyLoss(weight=weights_atb)
+        #self.loss_mech = torch.nn.CrossEntropyLoss(weight=weights_mech)
+        self.loss_atb = torch.nn.CrossEntropyLoss()
+        self.loss_mech = torch.nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.parameters(), lr=0.0001)
 
     # Forward pass
@@ -46,6 +49,10 @@ class MultiTaskModelEmbedd(TorchModel):
     def training_step(self, trainloader, nb_epochs, atb_coeff, mech_coeff):
         for epoch in range(nb_epochs):
 
+            self.loss = 0
+            self.loss_atb_class = 0
+            self.loss_mechanisms = 0
+
             for (idx, batch) in enumerate(trainloader):
                 # Separate samples and labels
                 x = batch[:, :-2]
@@ -58,18 +65,19 @@ class MultiTaskModelEmbedd(TorchModel):
                 atb_class_pred, mechanism_pred = self.forward(x.unsqueeze(1))
 
                 # Compute separate losses
-                loss_atb_class = self.loss_atb(
+                self.loss_atb_class = self.loss_atb(
                     atb_class_pred.squeeze(1), y[:, 0].type(torch.LongTensor)
                 )
-                loss_mechanisms = self.loss_mech(
+
+                self.loss_mechanisms = self.loss_mech(
                     mechanism_pred.squeeze(1), y[:, 1].type(torch.LongTensor)
                 )
 
                 # Compute overall loss
-                loss = loss_atb_class * atb_coeff + loss_mechanisms * mech_coeff
+                self.loss = self.loss_atb_class * atb_coeff + self.loss_mechanisms * mech_coeff
 
                 # Backpropagation
-                loss.backward()
+                self.loss.backward()
 
                 # Adjust weights
                 self.optimizer.step()

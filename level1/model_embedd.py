@@ -59,7 +59,8 @@ x_train, x_test, y_train, y_test = train_test_split(
     cls_embeddings,
     np.column_stack((encoded_atb_classes, encoded_mechanism)),
     test_size=0.3,
-)
+    stratify= encoded_mechanism)
+
 batch_size = 32
 trainloader = DataLoader(np.column_stack((x_train, y_train)), batch_size=batch_size)
 testloader = DataLoader(np.column_stack((x_test, y_test)), batch_size=batch_size)

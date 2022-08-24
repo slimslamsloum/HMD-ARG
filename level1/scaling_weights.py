@@ -43,8 +43,3 @@ for k in counter_atb.keys():
 
 for k in counter_mech.keys():
     weights_mech[k] = len(encoded_mechanism)/(5*counter_mech[k])
-
-print(counter_atb)
-print(weights_atb)
-print(counter_mech)
-print(weights_mech)
