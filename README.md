@@ -15,6 +15,18 @@ The dataset has been curated by the Deepchain team on [antibiotic-resistance](ht
 
 Here is an example of a sample in our dataset: 
 
+    Protein_ID: ACN5894.1
+
+    Sequence: MAEPVLSVKD...
+
+    antibiotic_class: macrolide-lincosamide-streptogramin
+
+    gene_name: macB
+
+    mechanism: antibiotic target prediction
+
+    label: 0.0 (which means it isn't from an ARG)
+
 ## Level 0
 
 Here we seek to predict whether a protein is produced by an ARG or not. 
