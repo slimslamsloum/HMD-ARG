@@ -9,6 +9,8 @@ The work is mainly based on the paper [HMD-ARG](https://microbiomejournal.biomed
 
 The following sketch describes HMD-ARG:
 
+![hmd-arg.png](https://i.postimg.cc/MTy2J9TH/hmd-arg.png)
+
 ## Dataset
 
 The dataset has been curated by the Deepchain team on [antibiotic-resistance](https://github.com/DeepChainBio/bio-datasets/blob/main/datasets/antibiotic-resistance/description.md) and comprises of 17k samples. Each sample consists of a protein sequence, a label (0 or 1) indicating whether it has been produced by an ARG or not, the gene name, the antibiotic class it is resistant to and the resistance mechanism. 
@@ -54,6 +56,8 @@ Logistic regression and SVM were also tried but the MLP provided the best overal
 
 If the protein is indeed coming from an ARG, we then want to know what its resistance mechanism is and what antibiotic it is resistant to. To do so we use a multi-task learning deep neural network to predict at the same time
 these two labels (the resistance mecanism, and the antibiotic class). The model architecture is the following:
+
+![level1](https://i.postimg.cc/VvcG91zL/level1.png)
 
 We achieved the following results:
 
