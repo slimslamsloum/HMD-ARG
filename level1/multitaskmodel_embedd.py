@@ -29,10 +29,10 @@ class MultiTaskModelEmbedd(pl.LightningModule):
         self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2, nn.ReLU())
 
         # Loss and optimizer
-        #self.loss_atb = torch.nn.CrossEntropyLoss(weight=weights_atb)
-        #self.loss_mech = torch.nn.CrossEntropyLoss(weight=weights_mech)
-        self.loss_atb = torch.nn.CrossEntropyLoss()
-        self.loss_mech = torch.nn.CrossEntropyLoss()
+        self.loss_atb = torch.nn.CrossEntropyLoss(weight=weights_atb)
+        self.loss_mech = torch.nn.CrossEntropyLoss(weight=weights_mech)
+        #self.loss_atb = torch.nn.CrossEntropyLoss()
+        #self.loss_mech = torch.nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.parameters(), lr=0.0001)
 
     # Forward pass
@@ -46,41 +46,59 @@ class MultiTaskModelEmbedd(pl.LightningModule):
         return atb_class, mechanism
 
     # Train model
-    def training_step(self, trainloader, nb_epochs, atb_coeff, mech_coeff):
-        for epoch in range(nb_epochs):
+    def training_step(self, batch, batch_idx):
 
-            self.loss = 0
-            self.loss_atb_class = 0
-            self.loss_mechanisms = 0
-
-            for (idx, batch) in enumerate(trainloader):
-                # Separate samples and labels
                 x = batch[:, :-2]
                 y = batch[:, -2:]
-
-                # Zero out gradients
-                self.optimizer.zero_grad()
 
                 # Forward pass
                 atb_class_pred, mechanism_pred = self.forward(x.unsqueeze(1))
 
                 # Compute separate losses
-                self.loss_atb_class = self.loss_atb(
+                loss_atb_class = self.loss_atb(
                     atb_class_pred.squeeze(1), y[:, 0].type(torch.LongTensor)
                 )
 
-                self.loss_mechanisms = self.loss_mech(
+                loss_mechanisms = self.loss_mech(
                     mechanism_pred.squeeze(1), y[:, 1].type(torch.LongTensor)
                 )
 
                 # Compute overall loss
-                self.loss = self.loss_atb_class * atb_coeff + self.loss_mechanisms * mech_coeff
+                loss = loss_atb_class * 1 + loss_mechanisms * 1
 
-                # Backpropagation
-                self.loss.backward()
+                self.log('loss', loss, on_epoch=True)
 
-                # Adjust weights
-                self.optimizer.step()
+                return loss
+
+    # Train model
+    def validation_step(self, batch, batch_idx):
+
+                x = batch[:, :-2]
+                y = batch[:, -2:]
+
+                # Forward pass
+                atb_class_pred, mechanism_pred = self.forward(x.unsqueeze(1))
+
+                # Compute separate losses
+                loss_atb_class = self.loss_atb(
+                    atb_class_pred.squeeze(1), y[:, 0].type(torch.LongTensor)
+                )
+
+                loss_mechanisms = self.loss_mech(
+                    mechanism_pred.squeeze(1), y[:, 1].type(torch.LongTensor)
+                )
+
+                # Compute overall loss
+                loss = loss_atb_class * 1 + loss_mechanisms * 1
+
+                self.log('loss', loss, on_epoch=True)
+
+                return loss
+
+
+    def configure_optimizers(self):
+        optimizer = torch.optim.Adam(self.parameters(), lr=1e-4)
+        return optimizer
 
     # Save model
     def save_model(self, path: str):
