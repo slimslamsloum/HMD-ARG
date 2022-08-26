@@ -20,11 +20,11 @@ class MultiTaskModelEmbedd(pl.LightningModule):
 
         # Hidden layers
         self.fc1 = nn.Linear(1280, 1024)
-        self.fc2 = nn.Linear(1024, 1024)
+        self.fc2 = nn.Linear(1024, 128)
 
         # Output layers for multi task
-        self.output_atb_class = nn.Sequential(nn.Linear(1024, 22), nn.Softmax())
-        self.output_mechanism = nn.Sequential(nn.Linear(1024, 5), nn.Softmax())
+        self.output_atb_class = nn.Sequential(nn.Linear(128, 22), nn.Softmax())
+        self.output_mechanism = nn.Sequential(nn.Linear(128, 5), nn.Softmax())
 
         # Hidden layer
         self.hidden = nn.Sequential(self.fc1, nn.ReLU(), self.fc2, nn.ReLU())
@@ -32,9 +32,6 @@ class MultiTaskModelEmbedd(pl.LightningModule):
         # Loss and optimizer
         self.loss_atb = torch.nn.CrossEntropyLoss(weight=weights_atb)
         self.loss_mech = torch.nn.CrossEntropyLoss(weight=weights_mech)
-        #self.loss_atb = torch.nn.CrossEntropyLoss()
-        #self.loss_mech = torch.nn.CrossEntropyLoss()
-        self.optimizer = optim.Adam(self.parameters(), lr=0.0001)
 
     # Forward pass
     def forward(self, x):
@@ -65,13 +62,13 @@ class MultiTaskModelEmbedd(pl.LightningModule):
                 )
 
                 # Compute overall loss
-                loss = loss_atb_class * 1 + loss_mechanisms * 1
+                loss = loss_atb_class * 1 + loss_mechanisms * 0.2
 
                 self.log('training_loss', loss, on_epoch=True)
 
                 return loss
 
-    # Train model
+    # Validate model
     def validation_step(self, batch, batch_idx):
 
                 x = batch[:, :-2]
@@ -90,7 +87,7 @@ class MultiTaskModelEmbedd(pl.LightningModule):
                 )
 
                 # Compute overall loss
-                loss = loss_atb_class * 1 + loss_mechanisms * 1
+                loss = loss_atb_class * 1 + loss_mechanisms * 0.2
 
                 probas = self.forward(x=x)
                 atb_proba = probas[0]
@@ -110,12 +107,13 @@ class MultiTaskModelEmbedd(pl.LightningModule):
                 accuracy = Accuracy()
                 acc = accuracy(torch.Tensor(pred).int(), y.int())
 
+                self.log('val_loss', loss, on_epoch=True)
                 self.log_dict({"val_acc": acc, "val_loss": loss}, on_epoch=True)
 
                 return loss
 
                 
-    
+    # Test model
     def test_step(self, batch, batch_idx):
 
                 x = batch[:, :-2]
@@ -134,7 +132,7 @@ class MultiTaskModelEmbedd(pl.LightningModule):
                 )
 
                 # Compute overall loss
-                loss = loss_atb_class * 1 + loss_mechanisms * 1
+                loss = loss_atb_class * 1 + loss_mechanisms * 0.2
 
                 probas = self.forward(x=x)
                 atb_proba = probas[0]
@@ -160,7 +158,7 @@ class MultiTaskModelEmbedd(pl.LightningModule):
 
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=1e-4)
+        optimizer = torch.optim.Adam(self.parameters(), lr=5e-4)
         return optimizer
 
     # Save model

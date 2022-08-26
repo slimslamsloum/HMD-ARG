@@ -62,14 +62,18 @@ A sketch of the model is presented here:
 
 ![level1](https://i.postimg.cc/VvcG91zL/level1.png)
 
-We achieved the following results:
-
+Our model unfortunately had a very high variance, with completely different accuracies between several trainings. Further work on this project could be fixing this issue.
 
 ## Level 2
 
 Finally, if the protein is resistant to a beta-lactamase antibiotic, we predict what subclass of beta-lactamase it is resistant to. The subclass nomenclature is based on the website [beta-lactamase-database](https://ifr48.timone.univ-mrs.fr/beta-lactamase/public/). The model used is exactly the same as the one used in Level 0, and achieved the following results:
 
 Accuracy: 0.92, Precision: 0.92, Recall: 0.92, F1: 0.91.
+
+## Next steps
+
+There is still work to be done on this project :) Fixing the varying accuracy in Level 1 as well as connecting the three levels into a single model still need to be done.
+Moreover, creating a DeepChain application for this model and then deploying it would be the final goal. Send me an email at selim.jerad@epfl.ch for any questions!
 
 ## libraries
 - pytorch>=1.5.0   
@@ -93,7 +97,7 @@ Accuracy: 0.92, Precision: 0.92, Recall: 0.92, F1: 0.91.
 
 ## Author
 
-Selim Jerad - Research Intern @ InstaDeep, Bachelor Student @ EPFL - s.jerad@instadeep.com
+Selim Jerad - Research Intern @ InstaDeep, Bachelor Student @ EPFL - selim.jerad@epfl.ch
 
 ## Datasets / Resources
 

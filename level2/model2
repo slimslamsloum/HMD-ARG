@@ -91,19 +91,6 @@ for k in label_assignment:
 mask = ["0" not in line[0] for line in samples]
 samples = samples[mask]
 
-# missing = []
-# for gene in genes:
-#    if not any(k in gene for k in label_assignment.keys()):
-#        missing.append(gene)
-# print(missing)
-# print(len(np.unique(missing)))
-# print(Counter(missing))
-
-# remove_chars = str.maketrans('','',digits+'-'+'_')
-# res = [s.translate(remove_chars) for s in missing]
-# print(len(np.unique(res)))
-# print(Counter(res))
-
 # Encode samples
 encoder = preprocessing.LabelEncoder()
 encoded_samples = encoder.fit_transform(samples[:, 1])
