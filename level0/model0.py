@@ -12,11 +12,13 @@ import seaborn as sns
 import torch
 from biodatasets import list_datasets, load_dataset
 from deepchain.models import MLP
-from deepchain.models.utils import confusion_matrix_plot, model_evaluation_accuracy
+from deepchain.models.utils import (confusion_matrix_plot,
+                                    model_evaluation_accuracy)
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from sklearn.manifold import TSNE
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import (accuracy_score, f1_score, precision_score,
+                             recall_score)
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
@@ -61,9 +63,6 @@ sns.scatterplot(
     alpha=0.3,
 )
 
-# Store tsne plot and pca model
-# plt.savefig('src/level0/tsne.png')
-
 # Separate data into training and test sets
 x_train, x_test, y_train, y_test = train_test_split(
     np.array(lowdim_embeddings), y[0], test_size=0.3
@@ -103,9 +102,9 @@ x_train, x_test, y_train, y_test = train_test_split(
 # ---------------------------------MLP-----------------------------------------------------------------
 
 n_class = len(np.unique(y_train))
-# print(n_class)
+print(n_class)
 input_shape = x_train.shape[1]
-# print(input_shape)
+print(input_shape)
 
 mlp = MLP(input_shape=input_shape, n_class=n_class)
 mlp.fit(x_train, y_train, epochs=16)

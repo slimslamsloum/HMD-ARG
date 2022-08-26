@@ -2,7 +2,6 @@
 
 """
 
-import random
 from typing import Counter
 
 import numpy as np
@@ -10,7 +9,8 @@ import pytorch_lightning as pl
 import torch
 from biodatasets import list_datasets, load_dataset
 from deepchain.models import MLP
-from deepchain.models.utils import confusion_matrix_plot, model_evaluation_accuracy
+from deepchain.models.utils import (confusion_matrix_plot,
+                                    model_evaluation_accuracy)
 from multitaskmodel_embedd import MultiTaskModelEmbedd
 from pytorch_lightning.loggers import TensorBoardLogger
 from sklearn import preprocessing
@@ -18,8 +18,6 @@ from sklearn.model_selection import train_test_split
 from torch import Tensor, float32, float64
 from torch.utils.data import DataLoader
 from torchmetrics import F1, Accuracy, AveragePrecision, Precision
-
-random.seed(10)
 
 #TODO: this model has a pretty high variance: training and validation accuracy vary too much between
 # different runs. It would be nice to fix this problem and have a high, stable accuracy.
@@ -72,7 +70,9 @@ valloader = DataLoader(np.column_stack((x_val, y_val)), batch_size=batch_size)
 testloader = DataLoader(np.column_stack((x_test, y_test)), batch_size=batch_size)
 
 #TODO: add model parameters such as scaling weights, learning rate, model architecture, etc.
-# Right now these parameters are explicitly written in multitaskmodel_embedd.
+# Right now these parameters are explicitly written in multitaskmodel_embedd. Using cross-validation
+# to find the best hyperparameters could be a solution to fixing the accuracy.
+
 # Create model
 model = MultiTaskModelEmbedd()
 
