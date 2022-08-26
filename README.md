@@ -2,7 +2,7 @@
 
 The rapid spread of antibiotic resistant bacteria is occuring worldwide, and is endangering global health by mitigating the efficacy of antibiotics, which have transformed medicine and saved millions of lives. This resistance is due to the overuse and misuse of antibiotics, which has led to Antibiotic Resistant Genes (ARG). Accurately identifying and understanding ARGs is an indispensable step to solve the antibiotic resistance crisis, which is the goal of this project. 
 
-This project is a base application that uses a hierarchical multi-task method, HMD-ARG, which provides detailed annotations of ARGS. The model is divided into three seperate levels. Namely, the model first predicts whether a given protein
+This project is a base application that uses a hierarchical multi-task method, HMD-ARG, which provides detailed annotations of ARGs. The model is divided into three seperate levels. Namely, the model first predicts whether a given protein
 is produced by an ARG or not (Level 0). If it is, then the model predicts the resistance mechanism and the antibiotic class the gene is resistant to (Level 1). And finally, if the predicted antibiotic family is beta-lactamase, we predict the subclass of beta-lactamase the ARG is resistant to (level 2).
 
 The work is mainly based on the paper [HMD-ARG](https://microbiomejournal.biomedcentral.com/articles/10.1186/s40168-021-01002-3). 
@@ -38,7 +38,7 @@ samples with 159 features. We then apply the T-SNE method to our data to visuali
 
 ![tsne.pgn](https://i.postimg.cc/SN7tY8sK/tsne.png)
 
-The default model included is a MLP with input size 1280 (size of an embedding), two hidden dense layers, output size of 1 (binary classification into ARG or not-ARG), and ReLU activation. The model can be described by the following sketch:
+The default model included is a MLP with input size 1280 (size of an embedding), one hidden dense layer (1280x128), and an output layer (binary classification into ARG or not-ARG), and ReLU activation. The model can be described by the following sketch:
 
 ![model.png](https://i.postimg.cc/tC0ZWYTZ/Screenshot-from-2022-07-20-13-29-22.png)
 
@@ -55,7 +55,10 @@ Logistic regression and SVM were also tried but the MLP provided the best overal
 ## Level 1
 
 If the protein is indeed coming from an ARG, we then want to know what its resistance mechanism is and what antibiotic it is resistant to. To do so we use a multi-task learning deep neural network to predict at the same time
-these two labels (the resistance mecanism, and the antibiotic class). The model architecture is the following:
+these two labels (the resistance mecanism, and the antibiotic class). The architecture of the multi-task model is an input layer of size 1280, two hidden layers (1280x1024, 1024x1024), and two output layers (one for the resistance mechanism and the other
+for the antibitic class), all with ReLU activation.
+
+A sketch of the model is presented here:
 
 ![level1](https://i.postimg.cc/VvcG91zL/level1.png)
 
@@ -69,7 +72,8 @@ Finally, if the protein is resistant to a beta-lactamase antibiotic, we predict 
 Accuracy: 0.92, Precision: 0.92, Recall: 0.92, F1: 0.91.
 
 ## libraries
-- pytorch>=1.5.0
+- pytorch>=1.5.0   
+- pytorch_lightning
 - numpy
 - pandas
 - torch
