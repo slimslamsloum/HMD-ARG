@@ -6,6 +6,7 @@ import torch.optim as optim
 from deepchain.models.torch_model import TorchModel
 from scaling_weights import weights_atb, weights_mech
 from torch import nn
+from torchmetrics import Accuracy
 
 
 class MultiTaskModelEmbedd(pl.LightningModule):
@@ -66,7 +67,7 @@ class MultiTaskModelEmbedd(pl.LightningModule):
                 # Compute overall loss
                 loss = loss_atb_class * 1 + loss_mechanisms * 1
 
-                self.log('loss', loss, on_epoch=True)
+                self.log('training_loss', loss, on_epoch=True)
 
                 return loss
 
@@ -91,9 +92,71 @@ class MultiTaskModelEmbedd(pl.LightningModule):
                 # Compute overall loss
                 loss = loss_atb_class * 1 + loss_mechanisms * 1
 
-                self.log('loss', loss, on_epoch=True)
+                probas = self.forward(x=x)
+                atb_proba = probas[0]
+                mech_proba = probas[1]
+
+                pred = []
+
+
+                for i in range(len(batch)):
+                    pred.append(
+                    (
+                        np.argmax(atb_proba[i].detach().numpy()),
+                        np.argmax(mech_proba[i].detach().numpy()),
+                    )
+                )
+
+                accuracy = Accuracy()
+                acc = accuracy(torch.Tensor(pred).int(), y.int())
+
+                self.log_dict({"val_acc": acc, "val_loss": loss}, on_epoch=True)
 
                 return loss
+
+                
+    
+    def test_step(self, batch, batch_idx):
+
+                x = batch[:, :-2]
+                y = batch[:, -2:]
+
+                # Forward pass
+                atb_class_pred, mechanism_pred = self.forward(x.unsqueeze(1))
+
+                # Compute separate losses
+                loss_atb_class = self.loss_atb(
+                    atb_class_pred.squeeze(1), y[:, 0].type(torch.LongTensor)
+                )
+
+                loss_mechanisms = self.loss_mech(
+                    mechanism_pred.squeeze(1), y[:, 1].type(torch.LongTensor)
+                )
+
+                # Compute overall loss
+                loss = loss_atb_class * 1 + loss_mechanisms * 1
+
+                probas = self.forward(x=x)
+                atb_proba = probas[0]
+                mech_proba = probas[1]
+
+                pred = []
+
+
+                for i in range(len(batch)):
+                    pred.append(
+                    (
+                        np.argmax(atb_proba[i].detach().numpy()),
+                        np.argmax(mech_proba[i].detach().numpy()),
+                    )
+                )
+
+                accuracy = Accuracy()
+                acc = accuracy(torch.Tensor(pred).int(), y.int())
+
+                self.log_dict({"test_acc": acc, "test_loss": loss}, on_epoch=True)
+
+                return acc
 
 
     def configure_optimizers(self):

@@ -10,8 +10,7 @@ import pytorch_lightning as pl
 import torch
 from biodatasets import list_datasets, load_dataset
 from deepchain.models import MLP
-from deepchain.models.utils import (confusion_matrix_plot,
-                                    model_evaluation_accuracy)
+from deepchain.models.utils import confusion_matrix_plot, model_evaluation_accuracy
 from multitaskmodel_embedd import MultiTaskModelEmbedd
 from pytorch_lightning.loggers import TensorBoardLogger
 from sklearn import preprocessing
@@ -38,7 +37,7 @@ y = y[0]
 atb_classes = atb_classes[0][y == 1]
 encoder_1 = preprocessing.LabelEncoder()
 encoded_atb_classes = encoder_1.fit_transform(atb_classes)
-#print(len((np.unique(encoded_atb_classes))))
+# print(len((np.unique(encoded_atb_classes))))
 
 # Compute the mechanisms associated to each protein
 # There are 5 different resistance mechanisms
@@ -61,12 +60,10 @@ x_train, x_test, y_train, y_test = train_test_split(
     cls_embeddings,
     np.column_stack((encoded_atb_classes, encoded_mechanism)),
     test_size=0.2,
-    stratify= encoded_mechanism)
+    stratify=encoded_mechanism,
+)
 
-x_train, x_val, y_train, y_val = train_test_split(
-    x_train,
-    y_train,
-    test_size=0.25)
+x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.25)
 
 batch_size = 32
 trainloader = DataLoader(np.column_stack((x_train, y_train)), batch_size=batch_size)
@@ -85,17 +82,17 @@ trainer.validate(model=model, dataloaders=valloader)
 
 trainer.test(model=model, dataloaders=testloader)
 
-#trainer.test(dataloaders=testloader)
+# trainer.test(dataloaders=testloader)
 
 # Save model
-#model.save_model(path="/home/selim/Documents/myApps/HMD-ARG/level1/model_embedd")
+# model.save_model(path="/home/selim/Documents/myApps/HMD-ARG/level1/model_embedd")
 
 # Predict on test set
-#atb_pred, mech_pred = model.forward(x_test)
+# atb_pred, mech_pred = model.forward(x_test)
 
 # Append the atb and mechanism predictions into a list
-#pred = []
-#for i in range(len(x_test)):
+# pred = []
+# for i in range(len(x_test)):
 #    pred.append(
 #        (
 #            np.argmax(atb_pred[i].detach().numpy()),
@@ -104,23 +101,23 @@ trainer.test(model=model, dataloaders=testloader)
 #    )
 
 # Accuracy evaluation
-#accuracy = Accuracy(mdmc_average="global")
-#print("Accuracy: {0}".format(accuracy(torch.tensor(pred), torch.from_numpy(y_test))))
+# accuracy = Accuracy(mdmc_average="global")
+# print("Accuracy: {0}".format(accuracy(torch.tensor(pred), torch.from_numpy(y_test))))
 
 # Precision evaluation
-#precision = Precision(mdmc_average="global")
-#print(
+# precision = Precision(mdmc_average="global")
+# print(
 #    "Precision: {0}".format(
 #        precision(torch.tensor(pred), torch.from_numpy(y_test).int())
 #    )
-#)
+# )
 
 # Recall evalution
-#recall = Recall(mdmc_average="global")
-#print("Recall: {0}".format(recall(torch.tensor(pred), torch.from_numpy(y_test).int())))
+# recall = Recall(mdmc_average="global")
+# print("Recall: {0}".format(recall(torch.tensor(pred), torch.from_numpy(y_test).int())))
 
 # F1 Score evaluation
-#f1score = F1(mdmc_average="global")
-#print(
+# f1score = F1(mdmc_average="global")
+# print(
 #    "F1 Score: {0}".format(f1score(torch.tensor(pred), torch.from_numpy(y_test).int()))
-#)
+# )
